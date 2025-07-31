@@ -1,0 +1,148 @@
+'use client';
+
+import { useState } from 'react';
+import type { AnalyzePatientNotesInput, AnalyzePatientNotesOutput } from '@/ai/flows/analyze-patient-notes';
+import { analyzePatientNotes } from '@/ai/flows/analyze-patient-notes';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
+import { Progress } from '../ui/progress';
+
+interface ReportAnalyzerProps {
+  setAnalysisResult: (result: AnalyzePatientNotesOutput) => void;
+  setActiveView: (view: string) => void;
+}
+
+export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnalyzerProps) {
+  const [notes, setNotes] = useState('');
+  const [guidelines, setGuidelines] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<AnalyzePatientNotesOutput | null>(null);
+  const { toast } = useToast();
+
+  const handleSubmit = async () => {
+    if (!notes) {
+      toast({
+        variant: 'destructive',
+        title: 'Input required',
+        description: 'Please enter patient notes to analyze.',
+      });
+      return;
+    }
+    setIsLoading(true);
+    setResult(null);
+    try {
+      const input: AnalyzePatientNotesInput = { notes, treatmentPlanGuidelines: guidelines };
+      const analysisResult = await analyzePatientNotes(input);
+      setResult(analysisResult);
+      setAnalysisResult(analysisResult); // Pass result to parent
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Analysis Failed',
+        description: 'An error occurred while analyzing the notes. Please try again.',
+      });
+    }
+    setIsLoading(false);
+  };
+
+  const handleGeneratePlan = () => {
+    if (result) {
+        setAnalysisResult(result);
+        setActiveView('planner');
+    }
+  };
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-headline">AI Report Analyzer</CardTitle>
+          <CardDescription>Paste patient notes or document text below for analysis.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="patient-notes">Patient Notes</Label>
+            <Textarea
+              id="patient-notes"
+              placeholder="Enter patient symptoms, history, and observations..."
+              className="min-h-[200px]"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="guidelines">Optional: Treatment Plan Guidelines</Label>
+            <Textarea
+              id="guidelines"
+              placeholder="e.g., 'Consider medication allergies', 'Patient prefers non-invasive options.'"
+              value={guidelines}
+              onChange={(e) => setGuidelines(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button onClick={handleSubmit} disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Analyze Notes
+          </Button>
+        </CardFooter>
+      </Card>
+      
+      <div className="space-y-6">
+        {isLoading && (
+            <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline">Analysis in Progress</CardTitle>
+                    <CardDescription>The AI is processing the medical data. Please wait.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex items-center justify-center py-12">
+                     <Loader2 className="h-16 w-16 animate-spin text-primary" />
+                </CardContent>
+            </Card>
+        )}
+        {result && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-headline">Analysis Complete</CardTitle>
+              <CardDescription>Review the AI-generated diagnostic insights below.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h3 className="font-semibold mb-1">Primary Diagnosis</h3>
+                <p className="text-lg font-bold text-accent-foreground">{result.primaryDiagnosis}</p>
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-semibold">Confidence Score: {Math.round(result.confidenceScore * 100)}%</h3>
+                <Progress value={result.confidenceScore * 100} className="w-full" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Differential Diagnoses</h3>
+                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                  {result.differentialDiagnoses.map((diag, index) => (
+                    <li key={index}>{diag}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Diagnostic Reasoning</h3>
+                <p className="text-sm text-muted-foreground bg-secondary/50 p-3 rounded-md">{result.diagnosticReasoning}</p>
+              </div>
+            </CardContent>
+            <CardFooter>
+                <Button onClick={handleGeneratePlan}>
+                    Generate Treatment Plan
+                </Button>
+            </CardFooter>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}
