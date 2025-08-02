@@ -20,6 +20,7 @@ const AnalyzePatientNotesInputSchema = z.object({
       "A medical image, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
   treatmentPlanGuidelines: z.string().optional().describe('Optional guidelines for the treatment plan.'),
+  advancementsAndResults: z.string().optional().describe('Optional recent medical advancements and clinical trial results to consider for a more accurate diagnosis.'),
 });
 export type AnalyzePatientNotesInput = z.infer<typeof AnalyzePatientNotesInputSchema>;
 
@@ -44,14 +45,19 @@ const analyzePatientNotesPrompt = ai.definePrompt({
   Given the following patient notes and optional medical image, provide a primary diagnosis, a list of differential diagnoses, a confidence score (0-1), and the reasoning behind the diagnosis.  Make sure the confidence score reflects the certainty of your diagnosis given the data provided.
 
   Patient Notes: {{{notes}}}
-  ${'{{#if photoDataUri}}'}
+  {{#if photoDataUri}}
   Medical Image: {{media url=photoDataUri}}
-  ${'{{/if}}'}
+  {{/if}}
 
-  ${'{{#if treatmentPlanGuidelines}}'}
+  {{#if treatmentPlanGuidelines}}
   Consider these treatment plan guidelines when formulating your diagnosis and reasoning:
   {{treatmentPlanGuidelines}}
-  ${'{{/if}}'}
+  {{/if}}
+
+  {{#if advancementsAndResults}}
+  For a more accurate diagnosis, consider the following recent medical advancements and clinical trial results:
+  {{{advancementsAndResults}}}
+  {{/if}}
 
   Format your output as a JSON object with the following keys:
   - primaryDiagnosis: The primary diagnosis.

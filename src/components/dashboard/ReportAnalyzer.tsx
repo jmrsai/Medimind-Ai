@@ -25,6 +25,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
   const [result, setResult] = useState<AnalyzePatientNotesOutput | null>(null);
   const { toast } = useToast();
   const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
+  const [advancements, setAdvancements] = useState('');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -33,17 +34,17 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
       reader.onload = (e) => {
         const result = e.target?.result;
         if (typeof result === 'string') {
-          if (file.type.startsWith('image/')) {
-            setPhotoDataUri(result);
-            setNotes((prev) => (prev ? prev : `Analyzing uploaded image: ${file.name}`));
-          } else {
-            setNotes(result);
-            setPhotoDataUri(null);
-          }
-          toast({
-            title: 'File Loaded',
-            description: `Successfully loaded content from ${file.name}.`,
-          });
+            if (file.type.startsWith('image/')) {
+              setPhotoDataUri(result);
+              setNotes((prev) => (prev ? prev : `Analyzing uploaded image: ${file.name}`));
+            } else {
+              setNotes(result);
+              setPhotoDataUri(null);
+            }
+            toast({
+              title: 'File Loaded',
+              description: `Successfully loaded content from ${file.name}.`,
+            });
         }
       };
       reader.onerror = () => {
@@ -75,7 +76,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
     setIsLoading(true);
     setResult(null);
     try {
-      const input: AnalyzePatientNotesInput = { notes, treatmentPlanGuidelines: guidelines };
+      const input: AnalyzePatientNotesInput = { notes, treatmentPlanGuidelines: guidelines, advancementsAndResults: advancements };
       if (photoDataUri) {
         input.photoDataUri = photoDataUri;
       }
@@ -168,6 +169,16 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
               placeholder="e.g., 'Consider medication allergies', 'Patient prefers non-invasive options.'"
               value={guidelines}
               onChange={(e) => setGuidelines(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="advancements">Optional: Advancements and Results</Label>
+            <Textarea
+              id="advancements"
+              placeholder="e.g., 'Incorporate findings from recent JAMA articles on this condition.'"
+              value={advancements}
+              onChange={(e) => setAdvancements(e.target.value)}
               disabled={isLoading}
             />
           </div>
