@@ -8,8 +8,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Upload } from 'lucide-react';
 import { Progress } from '../ui/progress';
+import { Input } from '../ui/input';
 
 interface ReportAnalyzerProps {
   setAnalysisResult: (result: AnalyzePatientNotesOutput) => void;
@@ -23,12 +24,47 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
   const [result, setResult] = useState<AnalyzePatientNotesOutput | null>(null);
   const { toast } = useToast();
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.type.startsWith('text/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target?.result;
+          if (typeof text === 'string') {
+            setNotes(text);
+            toast({
+              title: 'File Loaded',
+              description: `Successfully loaded content from ${file.name}.`,
+            });
+          }
+        };
+        reader.onerror = () => {
+            toast({
+                variant: 'destructive',
+                title: 'File Read Error',
+                description: 'Could not read the contents of the selected file.',
+            });
+        };
+        reader.readAsText(file);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Invalid File Type',
+          description: 'Please upload a plain text file (.txt).',
+        });
+      }
+    }
+     // Reset file input to allow uploading the same file again
+    event.target.value = '';
+  };
+
   const handleSubmit = async () => {
     if (!notes) {
       toast({
         variant: 'destructive',
         title: 'Input required',
-        description: 'Please enter patient notes to analyze.',
+        description: 'Please enter patient notes or upload a document to analyze.',
       });
       return;
     }
@@ -62,9 +98,37 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
       <Card>
         <CardHeader>
           <CardTitle className="font-headline">AI Report Analyzer</CardTitle>
-          <CardDescription>Paste patient notes or document text below for analysis.</CardDescription>
+          <CardDescription>Paste patient notes, or upload a text document for analysis.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+           <div className="space-y-2">
+            <Label htmlFor="file-upload">Upload Document</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="file-upload"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+                accept=".txt"
+                disabled={isLoading}
+              />
+              <label
+                htmlFor="file-upload"
+                className="flex-1"
+              >
+                  <Button asChild variant="outline" disabled={isLoading}>
+                    <div>
+                        <Upload className="mr-2 h-4 w-4" />
+                        Upload .txt file
+                    </div>
+                  </Button>
+              </label>
+            </div>
+          </div>
+          <div className="relative space-y-2">
+             <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-background px-2 text-xs text-muted-foreground">OR</div>
+             <hr />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="patient-notes">Patient Notes</Label>
             <Textarea
