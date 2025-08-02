@@ -13,6 +13,12 @@ import {z} from 'genkit';
 
 const AnalyzePatientNotesInputSchema = z.object({
   notes: z.string().describe('The patient notes or medical document content to analyze.'),
+  photoDataUri: z
+    .string()
+    .optional()
+    .describe(
+      "A medical image, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
   treatmentPlanGuidelines: z.string().optional().describe('Optional guidelines for the treatment plan.'),
 });
 export type AnalyzePatientNotesInput = z.infer<typeof AnalyzePatientNotesInputSchema>;
@@ -35,9 +41,12 @@ const analyzePatientNotesPrompt = ai.definePrompt({
   output: {schema: AnalyzePatientNotesOutputSchema},
   prompt: `You are an AI assistant that specializes in analyzing patient notes and medical documents to provide a comprehensive medical analysis.
 
-  Given the following patient notes, provide a primary diagnosis, a list of differential diagnoses, a confidence score (0-1), and the reasoning behind the diagnosis.  Make sure the confidence score reflects the certainty of your diagnosis given the data provided.
+  Given the following patient notes and optional medical image, provide a primary diagnosis, a list of differential diagnoses, a confidence score (0-1), and the reasoning behind the diagnosis.  Make sure the confidence score reflects the certainty of your diagnosis given the data provided.
 
   Patient Notes: {{{notes}}}
+  ${'{{#if photoDataUri}}'}
+  Medical Image: {{media url=photoDataUri}}
+  ${'{{/if}}'}
 
   ${'{{#if treatmentPlanGuidelines}}'}
   Consider these treatment plan guidelines when formulating your diagnosis and reasoning:

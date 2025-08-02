@@ -8,9 +8,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, X } from 'lucide-react';
 import { Progress } from '../ui/progress';
 import { Input } from '../ui/input';
+import Image from 'next/image';
 
 interface ReportAnalyzerProps {
   setAnalysisResult: (result: AnalyzePatientNotesOutput) => void;
@@ -23,15 +24,22 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalyzePatientNotesOutput | null>(null);
   const { toast } = useToast();
+  const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const text = e.target?.result;
-        if (typeof text === 'string') {
-          setNotes(text);
+        const result = e.target?.result;
+        if (typeof result === 'string') {
+          if (file.type.startsWith('image/')) {
+            setPhotoDataUri(result);
+            setNotes((prev) => (prev ? prev : `Analyzing uploaded image: ${file.name}`));
+          } else {
+            setNotes(result);
+            setPhotoDataUri(null);
+          }
           toast({
             title: 'File Loaded',
             description: `Successfully loaded content from ${file.name}.`,
@@ -45,14 +53,18 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
               description: 'Could not read the contents of the selected file.',
           });
       };
-      reader.readAsText(file);
+      if (file.type.startsWith('image/')) {
+        reader.readAsDataURL(file);
+      } else {
+        reader.readAsText(file);
+      }
     }
      // Reset file input to allow uploading the same file again
     event.target.value = '';
   };
 
   const handleSubmit = async () => {
-    if (!notes) {
+    if (!notes && !photoDataUri) {
       toast({
         variant: 'destructive',
         title: 'Input required',
@@ -64,6 +76,9 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
     setResult(null);
     try {
       const input: AnalyzePatientNotesInput = { notes, treatmentPlanGuidelines: guidelines };
+      if (photoDataUri) {
+        input.photoDataUri = photoDataUri;
+      }
       const analysisResult = await analyzePatientNotes(input);
       setResult(analysisResult);
       setAnalysisResult(analysisResult); // Pass result to parent
@@ -85,6 +100,13 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
     }
   };
 
+  const clearPhoto = () => {
+    setPhotoDataUri(null);
+    if (notes.startsWith('Analyzing uploaded image:')) {
+        setNotes('');
+    }
+  }
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -93,7 +115,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
           <CardDescription>Paste patient notes, or upload a document for analysis.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-           <div className="space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="file-upload">Upload Document</Label>
             <div className="flex items-center gap-2">
               <Input
@@ -115,6 +137,14 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
                   </Button>
               </label>
             </div>
+            {photoDataUri && (
+                <div className="relative mt-2 rounded-md border border-input p-2">
+                    <Image src={photoDataUri} alt="Uploaded document" width={200} height={200} className="rounded-md object-contain" />
+                    <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6" onClick={clearPhoto}>
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+            )}
           </div>
           <div className="relative space-y-2">
              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-background px-2 text-xs text-muted-foreground">OR</div>
