@@ -27,33 +27,25 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.type.startsWith('text/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const text = e.target?.result;
-          if (typeof text === 'string') {
-            setNotes(text);
-            toast({
-              title: 'File Loaded',
-              description: `Successfully loaded content from ${file.name}.`,
-            });
-          }
-        };
-        reader.onerror = () => {
-            toast({
-                variant: 'destructive',
-                title: 'File Read Error',
-                description: 'Could not read the contents of the selected file.',
-            });
-        };
-        reader.readAsText(file);
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Invalid File Type',
-          description: 'Please upload a plain text file (.txt).',
-        });
-      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result;
+        if (typeof text === 'string') {
+          setNotes(text);
+          toast({
+            title: 'File Loaded',
+            description: `Successfully loaded content from ${file.name}.`,
+          });
+        }
+      };
+      reader.onerror = () => {
+          toast({
+              variant: 'destructive',
+              title: 'File Read Error',
+              description: 'Could not read the contents of the selected file.',
+          });
+      };
+      reader.readAsText(file);
     }
      // Reset file input to allow uploading the same file again
     event.target.value = '';
@@ -98,7 +90,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
       <Card>
         <CardHeader>
           <CardTitle className="font-headline">AI Report Analyzer</CardTitle>
-          <CardDescription>Paste patient notes, or upload a text document for analysis.</CardDescription>
+          <CardDescription>Paste patient notes, or upload a document for analysis.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
            <div className="space-y-2">
@@ -109,7 +101,6 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
                 type="file"
                 className="hidden"
                 onChange={handleFileChange}
-                accept=".txt"
                 disabled={isLoading}
               />
               <label
@@ -119,7 +110,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
                   <Button asChild variant="outline" disabled={isLoading}>
                     <div>
                         <Upload className="mr-2 h-4 w-4" />
-                        Upload .txt file
+                        Upload file
                     </div>
                   </Button>
               </label>
