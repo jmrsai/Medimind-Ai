@@ -14,6 +14,7 @@ import { TreatmentPlanner } from '@/components/dashboard/TreatmentPlanner';
 import { DocumentSummarizer } from '@/components/dashboard/DocumentSummarizer';
 import type { AnalyzePatientNotesOutput } from '@/ai/flows/analyze-patient-notes';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer';
 
@@ -44,7 +45,7 @@ export default function DashboardPage() {
 
   if (isLoading || !isAuthenticated) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
       </div>
     );
@@ -71,7 +72,7 @@ export default function DashboardPage() {
         <Button
           key={item.id}
           variant={activeView === item.id ? 'secondary' : 'ghost'}
-          className="justify-start gap-3"
+          className="justify-start gap-3 transition-colors"
           onClick={() => setActiveView(item.id as View)}
         >
           <item.icon className="h-4 w-4" />
@@ -87,7 +88,7 @@ export default function DashboardPage() {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <a href="/" className="flex items-center gap-2 font-semibold">
-              <Logo className="h-6 w-6" />
+              <Logo className="h-6 w-6 text-primary" />
               <span className="font-headline">MediMind AI</span>
             </a>
           </div>
@@ -111,7 +112,7 @@ export default function DashboardPage() {
               </SheetHeader>
               <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6 mb-2">
                  <a href="/" className="flex items-center gap-2 font-semibold">
-                  <Logo className="h-6 w-6" />
+                  <Logo className="h-6 w-6 text-primary" />
                   <span className="font-headline">MediMind AI</span>
                 </a>
               </div>
@@ -123,6 +124,7 @@ export default function DashboardPage() {
                 {navItems.find(item => item.id === activeView)?.label}
             </h1>
           </div>
+          <ThemeToggle />
           <UserNav />
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-background">
