@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { BookText, FileText, LayoutDashboard, Loader2, Menu, Stethoscope } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { UserNav } from '@/components/UserNav';
 import { Logo } from '@/components/icons';
 import { DashboardContent } from '@/components/dashboard/DashboardContent';
@@ -106,6 +106,9 @@ export default function DashboardPage() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
+              <SheetHeader>
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+              </SheetHeader>
               <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6 mb-2">
                  <a href="/" className="flex items-center gap-2 font-semibold">
                   <Logo className="h-6 w-6" />
