@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Upload, X } from 'lucide-react';
+import { Download, Loader2, Upload, X } from 'lucide-react';
 import { Progress } from '../ui/progress';
 import { Input } from '../ui/input';
 import Image from 'next/image';
@@ -108,6 +108,29 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
     }
   }
 
+  const handleDownload = () => {
+    if (!result) return;
+    const fileContent = `
+Primary Diagnosis: ${result.primaryDiagnosis}
+Confidence Score: ${Math.round(result.confidenceScore * 100)}%
+Differential Diagnoses:
+- ${result.differentialDiagnoses.join('\n- ')}
+
+Diagnostic Reasoning:
+${result.diagnosticReasoning}
+    `;
+    const blob = new Blob([fileContent.trim()], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'analysis-result.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -205,9 +228,15 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
         )}
         {result && (
           <Card>
-            <CardHeader>
-              <CardTitle className="font-headline">Analysis Complete</CardTitle>
-              <CardDescription>Review the AI-generated diagnostic insights below.</CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between">
+              <div>
+                <CardTitle className="font-headline">Analysis Complete</CardTitle>
+                <CardDescription>Review the AI-generated diagnostic insights below.</CardDescription>
+              </div>
+               <Button variant="outline" size="icon" onClick={handleDownload}>
+                  <Download className="h-4 w-4" />
+                  <span className="sr-only">Download Analysis</span>
+              </Button>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface TreatmentPlannerProps {
@@ -56,6 +56,19 @@ Differentials: ${analysisResult.differentialDiagnoses.join(', ')}`;
             });
         }
         setIsLoading(false);
+    };
+
+    const handleDownload = () => {
+        if (!plan) return;
+        const blob = new Blob([plan], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'treatment-plan.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     };
 
     return (
@@ -110,9 +123,15 @@ Differentials: ${analysisResult.differentialDiagnoses.join(', ')}`;
                 )}
                 {plan && (
                     <Card>
-                        <CardHeader>
-                            <CardTitle className="font-headline">Generated Treatment Plan</CardTitle>
-                             <CardDescription>This is an AI-generated suggestion. Always apply clinical judgment.</CardDescription>
+                        <CardHeader className="flex flex-row items-start justify-between">
+                            <div>
+                                <CardTitle className="font-headline">Generated Treatment Plan</CardTitle>
+                                <CardDescription>This is an AI-generated suggestion. Always apply clinical judgment.</CardDescription>
+                            </div>
+                            <Button variant="outline" size="icon" onClick={handleDownload}>
+                                <Download className="h-4 w-4" />
+                                <span className="sr-only">Download Plan</span>
+                            </Button>
                         </CardHeader>
                         <CardContent>
                             <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-4">

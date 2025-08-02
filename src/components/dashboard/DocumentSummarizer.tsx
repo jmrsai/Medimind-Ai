@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 
 
 export function DocumentSummarizer() {
@@ -40,6 +40,19 @@ export function DocumentSummarizer() {
       });
     }
     setIsLoading(false);
+  };
+
+  const handleDownload = () => {
+    if (!summary) return;
+    const blob = new Blob([summary], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'summary.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -84,9 +97,15 @@ export function DocumentSummarizer() {
         )}
         {summary && (
           <Card>
-            <CardHeader>
-              <CardTitle className="font-headline">AI-Generated Summary</CardTitle>
-              <CardDescription>Below is the concise summary of the provided document.</CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between">
+              <div>
+                <CardTitle className="font-headline">AI-Generated Summary</CardTitle>
+                <CardDescription>Below is the concise summary of the provided document.</CardDescription>
+              </div>
+              <Button variant="outline" size="icon" onClick={handleDownload}>
+                  <Download className="h-4 w-4" />
+                  <span className="sr-only">Download Summary</span>
+              </Button>
             </CardHeader>
             <CardContent>
                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-4">
