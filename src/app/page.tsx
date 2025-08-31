@@ -17,6 +17,13 @@ import type { AnalyzePatientNotesOutput } from '@/ai/flows/analyze-patient-notes
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Sidebar, SidebarContent, SidebarItem, SidebarTrigger, SidebarMenu, SidebarLabel } from '@/components/sidebar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer' | 'chart-summarizer';
 
@@ -128,6 +135,20 @@ export default function DashboardPage() {
           {renderContent()}
         </main>
       </div>
+       <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="fixed bottom-6 right-6 z-50">
+                <Button size="icon" className="h-14 w-14 rounded-full shadow-lg">
+                    <Logo className="h-8 w-8" />
+                </Button>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>Powered by MediMind AI</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }
