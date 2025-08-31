@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Stethoscope, BookText, Activity, Users, LineChart } from 'lucide-react';
+import { FileText, Stethoscope, BookText, Activity, Users, LineChart, UserSquare } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Line, Area, AreaChart } from 'recharts';
 import Image from 'next/image';
 
@@ -130,7 +130,7 @@ export function DashboardContent({ setActiveView }: DashboardContentProps) {
                 Choose one of our powerful AI tools to begin.
             </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-3">
+        <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <div
               className="flex flex-col items-center justify-center p-6 space-y-3 rounded-lg cursor-pointer bg-secondary/50 hover:bg-secondary transition-colors"
               onClick={() => setActiveView('analyzer')}
@@ -159,6 +159,16 @@ export function DashboardContent({ setActiveView }: DashboardContentProps) {
               <h3 className="font-semibold text-center">AI Doc Summarizer</h3>
               <p className="text-xs text-center text-muted-foreground">
                 Condense long medical articles into key points.
+              </p>
+            </div>
+            <div
+              className="flex flex-col items-center justify-center p-6 space-y-3 rounded-lg cursor-pointer bg-secondary/50 hover:bg-secondary transition-colors"
+              onClick={() => setActiveView('chart-summarizer')}
+            >
+              <UserSquare className="h-8 w-8 text-primary" />
+              <h3 className="font-semibold text-center">AI Chart Summarizer</h3>
+              <p className="text-xs text-center text-muted-foreground">
+                Summarize a full patient chart into a brief overview.
               </p>
             </div>
         </CardContent>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookText, FileText, LayoutDashboard, Loader2, Menu, Stethoscope } from 'lucide-react';
+import { BookText, FileText, LayoutDashboard, Loader2, Menu, Stethoscope, UserSquare } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -12,18 +12,20 @@ import { DashboardContent } from '@/components/dashboard/DashboardContent';
 import { ReportAnalyzer } from '@/components/dashboard/ReportAnalyzer';
 import { TreatmentPlanner } from '@/components/dashboard/TreatmentPlanner';
 import { DocumentSummarizer } from '@/components/dashboard/DocumentSummarizer';
+import { PatientChartSummarizer } from '@/components/dashboard/PatientChartSummarizer';
 import type { AnalyzePatientNotesOutput } from '@/ai/flows/analyze-patient-notes';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Sidebar, SidebarContent, SidebarItem, SidebarTrigger, SidebarMenu, SidebarLabel } from '@/components/sidebar';
 
-type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer';
+type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer' | 'chart-summarizer';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'analyzer', label: 'AI Report Analyzer', icon: FileText },
   { id: 'planner', label: 'AI Treatment Planner', icon: Stethoscope },
   { id: 'summarizer', label: 'AI Document Summarizer', icon: BookText },
+  { id: 'chart-summarizer', label: 'AI Chart Summarizer', icon: UserSquare },
 ];
 
 export default function DashboardPage() {
@@ -61,6 +63,8 @@ export default function DashboardPage() {
         return <TreatmentPlanner analysisResult={analysisResult} />;
       case 'summarizer':
         return <DocumentSummarizer />;
+      case 'chart-summarizer':
+        return <PatientChartSummarizer />;
       default:
         return <DashboardContent setActiveView={setActiveView} />;
     }
@@ -103,6 +107,7 @@ export default function DashboardPage() {
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col p-0">
                <SheetHeader className="p-4 border-b">
+                <SheetTitle className="sr-only">Menu</SheetTitle>
                 <a href="/" className="flex items-center gap-2 font-semibold">
                   <Logo className="h-6 w-6 text-primary" />
                   <span className="font-headline">MediMind AI</span>
