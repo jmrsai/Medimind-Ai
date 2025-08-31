@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/icons';
@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 
 
 export default function LoginPage() {
@@ -94,6 +95,14 @@ export default function LoginPage() {
             </Button>
           </form>
         </CardContent>
+        <CardFooter className="flex-col gap-4">
+             <div className="text-center text-sm text-muted-foreground">
+              Don't have an account?{' '}
+              <Link href="/signup" className="underline font-semibold hover:text-primary">
+                Sign up
+              </Link>
+            </div>
+        </CardFooter>
       </Card>
     </div>
   );
