@@ -156,7 +156,7 @@ export default function DashboardPage() {
                     className="h-16 w-16 rounded-full shadow-lg transition-all duration-300 ease-in-out active:animate-pop"
                     style={{ backgroundColor: fabColor, color: 'hsl(var(--primary-foreground))' }}
                 >
-                    <Logo className="h-12 w-12" />
+                    <Logo className="h-16 w-16" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="end" className="w-64">
