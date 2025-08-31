@@ -26,6 +26,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu"
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 
 type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer' | 'chart-summarizer' | 'medical-vision';
@@ -41,22 +43,25 @@ const navItems = [
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState<View>('dashboard');
   const [analysisResult, setAnalysisResult] = useState<AnalyzePatientNotesOutput | null>(null);
 
   useEffect(() => {
-    const user = localStorage.getItem('medimind_user');
-    if (user) {
-      setIsAuthenticated(true);
-    } else {
-      router.push('/login');
-    }
-    setIsLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        router.push('/login');
+      }
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, [router]);
 
-  if (isLoading || !isAuthenticated) {
+  if (isLoading || !user) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />

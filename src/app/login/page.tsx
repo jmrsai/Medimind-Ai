@@ -8,6 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/icons';
 import { useToast } from "@/components/ui/use-toast";
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Loader2 } from 'lucide-react';
 
 
 export default function LoginPage() {
@@ -15,23 +18,38 @@ export default function LoginPage() {
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      // Mock authentication
-      localStorage.setItem('medimind_user', JSON.stringify({ email }));
-      toast({
-        title: "Login Successful",
-        description: "Welcome back to MediMind AI.",
-      });
-      router.push('/');
-    } else {
+    if (!email || !password) {
         toast({
             variant: "destructive",
             title: "Login Failed",
             description: "Please enter both email and password.",
         });
+        return;
+    }
+    setIsLoading(true);
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        toast({
+            title: "Login Successful",
+            description: "Welcome back to MediMind AI.",
+        });
+        router.push('/');
+    } catch (error: any) {
+        let description = "An unknown error occurred.";
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            description = "Invalid email or password. Please try again.";
+        }
+        toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: description,
+        });
+    } finally {
+        setIsLoading(false);
     }
   };
 
@@ -56,6 +74,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -66,9 +85,11 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign In
             </Button>
           </form>

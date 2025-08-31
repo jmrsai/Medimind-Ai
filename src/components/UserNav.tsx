@@ -11,23 +11,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { auth } from '@/lib/firebase';
+import { signOut, User } from 'firebase/auth';
 import { LogOut, User as UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export function UserNav() {
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState('');
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const user = localStorage.getItem('medimind_user');
-    if (user) {
-      setUserEmail(JSON.parse(user).email);
-    }
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+        setUser(user);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('medimind_user');
+  const handleLogout = async () => {
+    await signOut(auth);
     router.push('/login');
   };
 
@@ -41,16 +43,16 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src="/avatars/01.png" alt="User avatar" />
-            <AvatarFallback>{getInitials(userEmail)}</AvatarFallback>
+            <AvatarImage src={user?.photoURL || "/avatars/01.png"} alt="User avatar" />
+            <AvatarFallback>{getInitials(user?.email || '')}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Healthcare Professional</p>
-            <p className="text-xs leading-none text-muted-foreground">{userEmail}</p>
+            <p className="text-sm font-medium leading-none">{user?.displayName || 'Healthcare Professional'}</p>
+            <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
