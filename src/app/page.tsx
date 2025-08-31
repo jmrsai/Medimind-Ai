@@ -149,8 +149,8 @@ export default function DashboardPage() {
       <div className="fixed bottom-6 right-6 z-50">
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button size="icon" className="h-14 w-14 rounded-full shadow-lg">
-                    <Logo className="h-8 w-8" />
+                <Button size="icon" className="h-14 w-14 rounded-full shadow-lg animate-pulse hover:animate-none">
+                    <Logo className="h-9 w-9" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="end" className="w-64">
