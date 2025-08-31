@@ -74,3 +74,12 @@ const SidebarTrigger = React.forwardRef<HTMLButtonElement, React.HTMLAttributes<
     <button ref={ref} className={cn("", className)} {...props} />
 ))
 SidebarTrigger.displayName = "SidebarTrigger"
+
+export {
+    Sidebar,
+    SidebarContent,
+    SidebarItem,
+    SidebarMenu,
+    SidebarLabel,
+    SidebarTrigger
+}
