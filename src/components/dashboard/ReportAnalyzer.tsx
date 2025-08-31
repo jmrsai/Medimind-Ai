@@ -14,7 +14,7 @@ import { Input } from '../ui/input';
 import Image from 'next/image';
 
 interface ReportAnalyzerProps {
-  setAnalysisResult: (result: AnalyzePatientNotesOutput) => void;
+  setAnalysisResult: (result: AnalyzePatientNotesOutput & { advancements?: string }) => void;
   setActiveView: (view: string) => void;
 }
 
@@ -82,7 +82,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
       }
       const analysisResult = await analyzePatientNotes(input);
       setResult(analysisResult);
-      setAnalysisResult(analysisResult); // Pass result to parent
+      setAnalysisResult({...analysisResult, advancements }); // Pass result to parent
     } catch (error) {
       console.error('Analysis failed:', error);
       toast({
@@ -96,7 +96,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
 
   const handleGeneratePlan = () => {
     if (result) {
-        setAnalysisResult(result);
+        setAnalysisResult({...result, advancements});
         setActiveView('planner');
     }
   };

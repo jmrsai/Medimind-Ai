@@ -11,12 +11,13 @@ import { Download, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface TreatmentPlannerProps {
-    analysisResult: AnalyzePatientNotesOutput | null;
+    analysisResult: (AnalyzePatientNotesOutput & { advancements?: string }) | null;
 }
 
 export function TreatmentPlanner({ analysisResult }: TreatmentPlannerProps) {
     const [aiAnalysis, setAiAnalysis] = useState('');
     const [guidelines, setGuidelines] = useState('');
+    const [advancements, setAdvancements] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [plan, setPlan] = useState<GenerateTreatmentPlanOutput['treatmentPlan'] | null>(null);
     const { toast } = useToast();
@@ -29,6 +30,9 @@ Confidence: ${Math.round(analysisResult.confidenceScore * 100)}%
 Reasoning: ${analysisResult.diagnosticReasoning}
 Differentials: ${analysisResult.differentialDiagnoses.join(', ')}`;
             setAiAnalysis(formattedAnalysis);
+            if (analysisResult.advancements) {
+              setAdvancements(analysisResult.advancements);
+            }
         }
     }, [analysisResult]);
 
@@ -44,7 +48,11 @@ Differentials: ${analysisResult.differentialDiagnoses.join(', ')}`;
         setIsLoading(true);
         setPlan(null);
         try {
-            const input: GenerateTreatmentPlanInput = { aiAnalysis, treatmentPlanGuidelines: guidelines };
+            const input: GenerateTreatmentPlanInput = { 
+                aiAnalysis, 
+                treatmentPlanGuidelines: guidelines,
+                advancementsAndResults: advancements
+            };
             const { treatmentPlan } = await generateTreatmentPlan(input);
             setPlan(treatmentPlan);
         } catch (error) {
@@ -114,6 +122,16 @@ ${plan.patientEducation}
                             onChange={(e) => setGuidelines(e.target.value)}
                             disabled={isLoading}
                         />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="advancements">Optional: Advancements and Results</Label>
+                      <Textarea
+                        id="advancements"
+                        placeholder="e.g., 'Incorporate findings from recent JAMA articles on this condition.'"
+                        value={advancements}
+                        onChange={(e) => setAdvancements(e.target.value)}
+                        disabled={isLoading}
+                      />
                     </div>
                 </CardContent>
                 <CardFooter>

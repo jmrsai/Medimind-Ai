@@ -46,7 +46,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState<View>('dashboard');
-  const [analysisResult, setAnalysisResult] = useState<AnalyzePatientNotesOutput | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<(AnalyzePatientNotesOutput & { advancements?: string; }) | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

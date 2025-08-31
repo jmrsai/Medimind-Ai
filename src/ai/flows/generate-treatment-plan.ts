@@ -19,6 +19,7 @@ const GenerateTreatmentPlanInputSchema = z.object({
     .string()
     .optional()
     .describe('Optional treatment plan guidelines to be incorporated.'),
+  advancementsAndResults: z.string().optional().describe('Optional recent medical advancements and clinical trial results to consider for the treatment plan.'),
 });
 export type GenerateTreatmentPlanInput = z.infer<typeof GenerateTreatmentPlanInputSchema>;
 
@@ -52,6 +53,11 @@ const prompt = ai.definePrompt({
   {{#if treatmentPlanGuidelines}}
   Incorporate the following specific guidelines into the plan:
   {{{treatmentPlanGuidelines}}}
+  {{/if}}
+
+  {{#if advancementsAndResults}}
+  To ensure the highest quality of care, consider the following recent medical advancements and clinical trial results in your treatment plan:
+  {{{advancementsAndResults}}}
   {{/if}}
 
   Your output must be a JSON object with a 'treatmentPlan' key. The value should be another object containing the following four sections:
