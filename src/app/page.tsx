@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { useFabColor } from '@/hooks/use-fab-color';
 
 
 type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer' | 'chart-summarizer' | 'medical-vision';
@@ -47,6 +48,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState<View>('dashboard');
   const [analysisResult, setAnalysisResult] = useState<(AnalyzePatientNotesOutput & { advancements?: string; }) | null>(null);
+  const fabColor = useFabColor();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -149,8 +151,12 @@ export default function DashboardPage() {
       <div className="fixed bottom-6 right-6 z-50">
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button size="icon" className="h-14 w-14 rounded-full shadow-lg animate-pulse hover:animate-none">
-                    <Logo className="h-9 w-9" />
+                <Button 
+                    size="icon" 
+                    className="h-16 w-16 rounded-full shadow-lg transition-all duration-300 ease-in-out active:animate-pop"
+                    style={{ backgroundColor: fabColor, color: 'hsl(var(--primary-foreground))' }}
+                >
+                    <Logo className="h-12 w-12" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="end" className="w-64">
