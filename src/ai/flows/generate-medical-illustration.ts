@@ -35,14 +35,11 @@ const generateMedicalIllustrationFlow = ai.defineFlow(
   },
   async (input) => {
     const { media } = await ai.generate({
-      model: 'googleai/gemini-1.5-flash-preview',
-      prompt: `Generate a photorealistic, high-quality medical illustration for use in a clinical setting.
+      model: 'googleai/imagen-4.0-fast-generate-001',
+      prompt: `A photorealistic, high-quality medical illustration for use in a clinical setting.
       Focus on accuracy and clarity. The illustration should be suitable for patient education and professional presentations.
       ---
       Prompt: ${input.prompt}`,
-       config: {
-        responseModalities: ['IMAGE'],
-      },
     });
 
     if (!media?.url) {
