@@ -60,6 +60,8 @@ This application uses **Genkit** to power its core AI functionalities. The AI fl
 - **AI Report Analyzer**: Analyzes patient notes and medical images to provide diagnoses and confidence scores.
 - **AI Treatment Planner**: Generates detailed treatment plans based on the analysis.
 - **AI Document Summarizer**: Condenses long medical documents into concise summaries.
+- **AI Chart Summarizer**: Creates a brief overview from a patient's chart.
+- **Medical Vision**: Generates high-quality medical illustrations from text descriptions.
 
 ## Deployment
 
