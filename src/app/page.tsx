@@ -18,11 +18,13 @@ import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Sidebar, SidebarContent, SidebarItem, SidebarTrigger, SidebarMenu, SidebarLabel } from '@/components/sidebar';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu"
 
 
 type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer' | 'chart-summarizer';
@@ -135,20 +137,25 @@ export default function DashboardPage() {
           {renderContent()}
         </main>
       </div>
-       <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 right-6 z-50">
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
                 <Button size="icon" className="h-14 w-14 rounded-full shadow-lg">
                     <Logo className="h-8 w-8" />
                 </Button>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent side="left">
-            <p>Powered by MediMind AI</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="top" align="end" className="w-64">
+                <DropdownMenuLabel>Quick Access</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {navItems.filter(item => item.id !== 'dashboard').map(item => (
+                    <DropdownMenuItem key={item.id} onClick={() => setActiveView(item.id as View)} className="cursor-pointer">
+                        <item.icon className="mr-2 h-4 w-4" />
+                        <span>{item.label}</span>
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   );
 }
