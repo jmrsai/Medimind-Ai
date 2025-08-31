@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookText, FileText, LayoutDashboard, Loader2, Menu, Stethoscope, UserSquare } from 'lucide-react';
+import { BookText, FileText, LayoutDashboard, Loader2, Menu, Stethoscope, UserSquare, Eye } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -13,6 +13,7 @@ import { ReportAnalyzer } from '@/components/dashboard/ReportAnalyzer';
 import { TreatmentPlanner } from '@/components/dashboard/TreatmentPlanner';
 import { DocumentSummarizer } from '@/components/dashboard/DocumentSummarizer';
 import { PatientChartSummarizer } from '@/components/dashboard/PatientChartSummarizer';
+import { MedicalVision } from '@/components/dashboard/MedicalVision';
 import type { AnalyzePatientNotesOutput } from '@/ai/flows/analyze-patient-notes';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -27,7 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 
-type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer' | 'chart-summarizer';
+type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer' | 'chart-summarizer' | 'medical-vision';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -35,6 +36,7 @@ const navItems = [
   { id: 'planner', label: 'AI Treatment Planner', icon: Stethoscope },
   { id: 'summarizer', label: 'AI Document Summarizer', icon: BookText },
   { id: 'chart-summarizer', label: 'AI Chart Summarizer', icon: UserSquare },
+  { id: 'medical-vision', label: 'Medical Vision', icon: Eye },
 ];
 
 export default function DashboardPage() {
@@ -74,6 +76,8 @@ export default function DashboardPage() {
         return <DocumentSummarizer />;
       case 'chart-summarizer':
         return <PatientChartSummarizer />;
+      case 'medical-vision':
+        return <MedicalVision />;
       default:
         return <DashboardContent setActiveView={setActiveView} />;
     }
