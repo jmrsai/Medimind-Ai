@@ -1,5 +1,3 @@
-// Summarize a medical document provided by the user.
-
 'use server';
 
 /**
@@ -25,7 +23,7 @@ export type SummarizeMedicalDocumentInput = z.infer<
 const SummarizeMedicalDocumentOutputSchema = z.object({
   summary: z
     .string()
-    .describe('A concise, AI-generated summary of the medical document.'),
+    .describe('A concise, AI-generated summary of the medical document, structured for a medical professional.'),
 });
 export type SummarizeMedicalDocumentOutput = z.infer<
   typeof SummarizeMedicalDocumentOutputSchema
@@ -41,7 +39,20 @@ const summarizeMedicalDocumentPrompt = ai.definePrompt({
   name: 'summarizeMedicalDocumentPrompt',
   input: {schema: SummarizeMedicalDocumentInputSchema},
   output: {schema: SummarizeMedicalDocumentOutputSchema},
-  prompt: `You are an expert medical summarizer.  Please provide a concise summary of the following medical document:\n\n{{{documentText}}}`,
+  prompt: `You are an AI assistant specializing in medical literature analysis for healthcare professionals.
+
+  Your task is to produce a high-quality summary of the following medical document. The summary should be clear, concise, and structured to be easily digestible by a busy clinician.
+
+  Focus on extracting the most critical information, such as:
+  - Key Findings
+  - Study Objectives
+  - Methodology
+  - Primary Outcomes
+  - Clinical Significance
+
+  Medical Document:
+  {{{documentText}}}
+  `,
 });
 
 const summarizeMedicalDocumentFlow = ai.defineFlow(

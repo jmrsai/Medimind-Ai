@@ -1,7 +1,7 @@
 'use client';
 
 import type { AnalyzePatientNotesOutput } from '@/ai/flows/analyze-patient-notes';
-import { generateTreatmentPlan, GenerateTreatmentPlanInput } from '@/ai/flows/generate-treatment-plan';
+import { generateTreatmentPlan, GenerateTreatmentPlanInput, GenerateTreatmentPlanOutput } from '@/ai/flows/generate-treatment-plan';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -18,7 +18,7 @@ export function TreatmentPlanner({ analysisResult }: TreatmentPlannerProps) {
     const [aiAnalysis, setAiAnalysis] = useState('');
     const [guidelines, setGuidelines] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [plan, setPlan] = useState<string | null>(null);
+    const [plan, setPlan] = useState<GenerateTreatmentPlanOutput['treatmentPlan'] | null>(null);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -60,7 +60,22 @@ Differentials: ${analysisResult.differentialDiagnoses.join(', ')}`;
 
     const handleDownload = () => {
         if (!plan) return;
-        const blob = new Blob([plan], { type: 'text/plain;charset=utf-8' });
+
+        const planText = `
+## Pharmacological Treatment
+${plan.pharmacological}
+
+## Non-Pharmacological Treatment
+${plan.nonPharmacological}
+
+## Monitoring Plan
+${plan.monitoring}
+
+## Patient Education
+${plan.patientEducation}
+        `;
+
+        const blob = new Blob([planText.trim()], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -133,9 +148,30 @@ Differentials: ${analysisResult.differentialDiagnoses.join(', ')}`;
                                 <span className="sr-only">Download Plan</span>
                             </Button>
                         </CardHeader>
-                        <CardContent>
-                            <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-4">
-                                {plan}
+                        <CardContent className="space-y-4">
+                            <div>
+                                <h3 className="font-semibold mb-2">Pharmacological Treatment</h3>
+                                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-3">
+                                    {plan.pharmacological}
+                                </div>
+                            </div>
+                             <div>
+                                <h3 className="font-semibold mb-2">Non-Pharmacological Treatment</h3>
+                                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-3">
+                                    {plan.nonPharmacological}
+                                </div>
+                            </div>
+                             <div>
+                                <h3 className="font-semibold mb-2">Monitoring Plan</h3>
+                                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-3">
+                                    {plan.monitoring}
+                                </div>
+                            </div>
+                             <div>
+                                <h3 className="font-semibold mb-2">Patient Education</h3>
+                                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-3">
+                                    {plan.patientEducation}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

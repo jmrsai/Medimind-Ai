@@ -25,10 +25,10 @@ const AnalyzePatientNotesInputSchema = z.object({
 export type AnalyzePatientNotesInput = z.infer<typeof AnalyzePatientNotesInputSchema>;
 
 const AnalyzePatientNotesOutputSchema = z.object({
-  primaryDiagnosis: z.string().describe('The primary diagnosis based on the patient notes.'),
-  differentialDiagnoses: z.array(z.string()).describe('A list of differential diagnoses to consider.'),
-  confidenceScore: z.number().describe('A confidence score (0-1) indicating the certainty of the diagnosis.'),
-  diagnosticReasoning: z.string().describe('The reasoning behind the diagnosis based on the notes.'),
+  primaryDiagnosis: z.string().describe('The most likely primary diagnosis based on the provided clinical information.'),
+  differentialDiagnoses: z.array(z.string()).describe('A list of potential differential diagnoses to consider, ordered by likelihood.'),
+  confidenceScore: z.number().describe('A confidence score (0-1) reflecting the certainty of the primary diagnosis, considering the quality and completeness of the input data.'),
+  diagnosticReasoning: z.string().describe('A detailed, evidence-based explanation for the primary diagnosis, citing specific findings from the patient notes and image.'),
 });
 export type AnalyzePatientNotesOutput = z.infer<typeof AnalyzePatientNotesOutputSchema>;
 
@@ -40,30 +40,31 @@ const analyzePatientNotesPrompt = ai.definePrompt({
   name: 'analyzePatientNotesPrompt',
   input: {schema: AnalyzePatientNotesInputSchema},
   output: {schema: AnalyzePatientNotesOutputSchema},
-  prompt: `You are an AI assistant that specializes in analyzing patient notes and medical documents to provide a comprehensive medical analysis.
+  prompt: `You are a highly skilled AI medical diagnostician. Your task is to provide a thorough and professional analysis of patient information for a healthcare provider.
 
-  Given the following patient notes and optional medical image, provide a primary diagnosis, a list of differential diagnoses, a confidence score (0-1), and the reasoning behind the diagnosis.  Make sure the confidence score reflects the certainty of your diagnosis given the data provided.
+  Analyze the following patient data, which may include clinical notes and a medical image. Provide a detailed, evidence-based diagnosis.
 
-  Patient Notes: {{{notes}}}
+  Patient Notes:
+  {{{notes}}}
   {{#if photoDataUri}}
   Medical Image: {{media url=photoDataUri}}
   {{/if}}
 
   {{#if treatmentPlanGuidelines}}
-  Consider these treatment plan guidelines when formulating your diagnosis and reasoning:
+  For context, consider these preliminary treatment plan guidelines when formulating your diagnosis:
   {{treatmentPlanGuidelines}}
   {{/if}}
 
   {{#if advancementsAndResults}}
-  For a more accurate diagnosis, consider the following recent medical advancements and clinical trial results:
+  To ensure the highest accuracy, consider the following recent medical advancements and clinical trial results in your analysis:
   {{{advancementsAndResults}}}
   {{/if}}
 
-  Format your output as a JSON object with the following keys:
-  - primaryDiagnosis: The primary diagnosis.
-  - differentialDiagnoses: A list of differential diagnoses.
-  - confidenceScore: A confidence score (0-1).
-  - diagnosticReasoning: The reasoning behind the diagnosis.
+  Your response must be a structured JSON object containing:
+  - primaryDiagnosis: The most likely diagnosis.
+  - differentialDiagnoses: An ordered list of alternative diagnoses.
+  - confidenceScore: Your confidence (0.0 to 1.0) in the primary diagnosis.
+  - diagnosticReasoning: A detailed rationale, referencing specific points from the patient's data to support your conclusions.
   `,
 });
 

@@ -23,7 +23,12 @@ const GenerateTreatmentPlanInputSchema = z.object({
 export type GenerateTreatmentPlanInput = z.infer<typeof GenerateTreatmentPlanInputSchema>;
 
 const GenerateTreatmentPlanOutputSchema = z.object({
-  treatmentPlan: z.string().describe('The generated treatment plan.'),
+  treatmentPlan: z.object({
+      pharmacological: z.string().describe("Medication recommendations, including drug name, dosage, and frequency."),
+      nonPharmacological: z.string().describe("Therapeutic procedures, lifestyle modifications, and other non-medication-based treatments."),
+      monitoring: z.string().describe("A plan for monitoring patient progress and treatment efficacy."),
+      patientEducation: z.string().describe("Key points to discuss with the patient regarding their condition and treatment.")
+  }).describe('The comprehensive, structured treatment plan.'),
 });
 export type GenerateTreatmentPlanOutput = z.infer<typeof GenerateTreatmentPlanOutputSchema>;
 
@@ -37,17 +42,23 @@ const prompt = ai.definePrompt({
   name: 'generateTreatmentPlanPrompt',
   input: {schema: GenerateTreatmentPlanInputSchema},
   output: {schema: GenerateTreatmentPlanOutputSchema},
-  prompt: `You are an AI assistant designed to generate treatment plans for healthcare professionals.
+  prompt: `You are an AI medical expert tasked with creating a detailed, evidence-based treatment plan for a healthcare professional.
 
-  Based on the AI analysis provided, generate a comprehensive treatment plan, including recommended medications, therapies, and lifestyle modifications.
-
-  {{#if treatmentPlanGuidelines}}
-  Incorporate the following treatment plan guidelines:
-  {{{treatmentPlanGuidelines}}}
-  {{/if}}
+  Based on the provided AI analysis, construct a comprehensive and structured treatment plan.
 
   AI Analysis:
   {{{aiAnalysis}}}
+
+  {{#if treatmentPlanGuidelines}}
+  Incorporate the following specific guidelines into the plan:
+  {{{treatmentPlanGuidelines}}}
+  {{/if}}
+
+  Your output must be a JSON object with a 'treatmentPlan' key. The value should be another object containing the following four sections:
+  - pharmacological: Detail specific medications, dosages, and administration schedules.
+  - nonPharmacological: Outline recommended therapies, lifestyle adjustments, and other non-drug interventions.
+  - monitoring: Describe the key parameters to track, and the recommended frequency for follow-up appointments.
+  - patientEducation: Summarize the crucial information the patient needs to understand about their condition and treatment.
   `,
 });
 
