@@ -30,3 +30,21 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function GoogleIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      role="img"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-4 w-4"
+      {...props}
+    >
+      <title>Google</title>
+      <path
+        fill="#4285F4"
+        d="M21.35 11.1H12.18v2.8h4.94c-.2 1.5-1.7 4.3-4.94 4.3-3 0-5.4-2.4-5.4-5.4s2.4-5.4 5.4-5.4c1.7 0 2.8.7 3.4 1.3l2.1-2.1C16.95 4.2 14.75 3 12.18 3c-4.9 0-8.9 4-8.9 8.9s4 8.9 8.9 8.9c5.2 0 8.5-3.6 8.5-8.6 0-.6-.1-1.2-.2-1.8z"
+      />
+    </svg>
+  );
+}
