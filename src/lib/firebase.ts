@@ -12,7 +12,6 @@ const firebaseConfig = {
   "storageBucket": "medimind-ai-7nctq.firebasestorage.app",
   "apiKey": "AIzaSyCwGLHWUaqR6N4oMPlya6ZP0kmHZUh4FII",
   "authDomain": "medimind-ai-7nctq.firebaseapp.com",
-  "measurementId": "",
   "messagingSenderId": "2916352478"
 };
 

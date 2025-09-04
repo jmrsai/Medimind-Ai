@@ -168,25 +168,25 @@ ${plan.patientEducation}
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div>
-                                <h3 className="font-semibold mb-2">Pharmacological Treatment</h3>
+                                <h3 className="font-semibold mb-2 text-primary">Pharmacological Treatment</h3>
                                 <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-3">
                                     {plan.pharmacological}
                                 </div>
                             </div>
                              <div>
-                                <h3 className="font-semibold mb-2">Non-Pharmacological Treatment</h3>
+                                <h3 className="font-semibold mb-2 text-primary">Non-Pharmacological Treatment</h3>
                                 <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-3">
                                     {plan.nonPharmacological}
                                 </div>
                             </div>
                              <div>
-                                <h3 className="font-semibold mb-2">Monitoring Plan</h3>
+                                <h3 className="font-semibold mb-2 text-primary">Monitoring Plan</h3>
                                 <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-3">
                                     {plan.monitoring}
                                 </div>
                             </div>
                              <div>
-                                <h3 className="font-semibold mb-2">Patient Education</h3>
+                                <h3 className="font-semibold mb-2 text-primary">Patient Education</h3>
                                 <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-wrap rounded-md bg-secondary/50 p-3">
                                     {plan.patientEducation}
                                 </div>

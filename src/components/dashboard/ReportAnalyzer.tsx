@@ -140,12 +140,13 @@ ${result.diagnosticReasoning}
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="file-upload">Upload Document</Label>
+            <Label htmlFor="file-upload">Upload Document or Image</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="file-upload"
                 type="file"
                 className="hidden"
+                accept="text/*,image/*"
                 onChange={handleFileChange}
                 disabled={isLoading}
               />
@@ -153,7 +154,7 @@ ${result.diagnosticReasoning}
                 htmlFor="file-upload"
                 className="flex-1"
               >
-                  <Button asChild variant="outline" disabled={isLoading}>
+                  <Button asChild variant="outline" disabled={isLoading} className="cursor-pointer">
                     <div>
                         <Upload className="mr-2 h-4 w-4" />
                         Upload file
@@ -162,9 +163,9 @@ ${result.diagnosticReasoning}
               </label>
             </div>
             {photoDataUri && (
-                <div className="relative mt-2 rounded-md border border-input p-2">
+                <div className="relative mt-2 rounded-md border border-input p-2 max-w-[200px]">
                     <Image src={photoDataUri} alt="Uploaded document" width={200} height={200} className="rounded-md object-contain" />
-                    <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6" onClick={clearPhoto}>
+                    <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 bg-background/50 hover:bg-background/80" onClick={clearPhoto}>
                         <X className="h-4 w-4" />
                     </Button>
                 </div>
@@ -241,7 +242,7 @@ ${result.diagnosticReasoning}
             <CardContent className="space-y-4">
               <div>
                 <h3 className="font-semibold mb-1">Primary Diagnosis</h3>
-                <p className="text-lg font-bold text-accent-foreground">{result.primaryDiagnosis}</p>
+                <p className="text-lg font-bold text-primary">{result.primaryDiagnosis}</p>
               </div>
               <div className="space-y-2">
                 <h3 className="font-semibold">Confidence Score: {Math.round(result.confidenceScore * 100)}%</h3>

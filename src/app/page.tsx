@@ -17,7 +17,7 @@ import { MedicalVision } from '@/components/dashboard/MedicalVision';
 import type { AnalyzePatientNotesOutput } from '@/ai/flows/analyze-patient-notes';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { Sidebar, SidebarContent, SidebarItem, SidebarTrigger, SidebarMenu, SidebarLabel } from '@/components/sidebar';
+import { Sidebar, SidebarContent, SidebarItem, SidebarMenu, SidebarLabel } from '@/components/sidebar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,15 +49,17 @@ export default function DashboardPage() {
   const [activeView, setActiveView] = useState<View>('dashboard');
   const [analysisResult, setAnalysisResult] = useState<(AnalyzePatientNotesOutput & { advancements?: string; }) | null>(null);
   const fabColor = useFabColor();
+  const [isContentVisible, setIsContentVisible] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
+        setIsLoading(false);
+        setTimeout(() => setIsContentVisible(true), 100);
       } else {
         router.push('/login');
       }
-      setIsLoading(false);
     });
 
     return () => unsubscribe();
@@ -104,7 +106,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+    <div className={cn("grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] transition-opacity duration-500", isContentVisible ? "opacity-100" : "opacity-0")}>
       <Sidebar className="hidden md:block">
         <div className="flex h-full max-h-screen flex-col">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
@@ -153,7 +155,7 @@ export default function DashboardPage() {
             <DropdownMenuTrigger asChild>
                 <Button 
                     size="icon" 
-                    className="h-16 w-16 rounded-full shadow-lg transition-all duration-300 ease-in-out active:animate-pop"
+                    className="h-16 w-16 rounded-full shadow-lg transition-all duration-300 ease-in-out active:animate-pop animate-pulse"
                     style={{ backgroundColor: fabColor, color: 'hsl(var(--primary-foreground))' }}
                 >
                     <Logo className="h-16 w-16" />

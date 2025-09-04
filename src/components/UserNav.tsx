@@ -13,17 +13,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { auth } from '@/lib/firebase';
 import { signOut, User } from 'firebase/auth';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { LogOut, User as UserIcon, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Skeleton } from './ui/skeleton';
 
 export function UserNav() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
         setUser(user);
+        setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -33,26 +36,34 @@ export function UserNav() {
     router.push('/login');
   };
 
-  const getInitials = (email: string) => {
+  const getInitials = (email: string | null | undefined) => {
     if (!email) return 'U';
     return email.charAt(0).toUpperCase();
   };
+
+  if (loading) {
+    return <Skeleton className="h-9 w-9 rounded-full" />;
+  }
+  
+  if (!user) {
+    return null;
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src={user?.photoURL || "/avatars/01.png"} alt="User avatar" />
-            <AvatarFallback>{getInitials(user?.email || '')}</AvatarFallback>
+            <AvatarImage src={user?.photoURL || undefined} alt="User avatar" />
+            <AvatarFallback>{getInitials(user?.email)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user?.displayName || 'Healthcare Professional'}</p>
-            <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+            <p className="text-sm font-medium leading-none">{user.displayName || 'Healthcare Professional'}</p>
+            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
