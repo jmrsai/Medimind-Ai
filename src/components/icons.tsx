@@ -14,6 +14,31 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
+      <path d="M12 2a10 10 0 1 0 10 10" />
+      <path d="m12 12 4 4" />
+      <path d="M12 12V2" />
+      <path d="m12 12-4 4" />
+      <path d="M12 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+      <path d="M7 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+      <path d="M17 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+    </svg>
+  );
+}
+
+export function OldLogo(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
       <path d="M9.5 2.5a2.5 2.5 0 0 1 5 0" />
       <path d="M12 12a5 5 0 0 0 5-5" />
       <path d="M7 7a5 5 0 0 0 5 5" />
