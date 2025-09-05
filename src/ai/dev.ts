@@ -6,3 +6,4 @@ import '@/ai/flows/analyze-patient-notes.ts';
 import '@/ai/flows/summarize-medical-document.ts';
 import '@/ai/flows/summarize-patient-chart.ts';
 import '@/ai/flows/generate-medical-illustration.ts';
+import '@/ai/flows/generate-from-doodle.ts';

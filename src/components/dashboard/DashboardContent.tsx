@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Stethoscope, BookText, Activity, Users, LineChart, UserSquare, Eye } from 'lucide-react';
+import { FileText, Stethoscope, BookText, Activity, Users, LineChart, UserSquare, Eye, Brush } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Line, Area, AreaChart } from 'recharts';
 import Image from 'next/image';
 
@@ -130,7 +130,7 @@ export function DashboardContent({ setActiveView }: DashboardContentProps) {
                 Choose one of our powerful AI tools to begin.
             </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
+        <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-6">
             <div
               className="flex flex-col items-center justify-center p-6 space-y-3 rounded-lg cursor-pointer bg-secondary/50 hover:bg-secondary transition-colors"
               onClick={() => setActiveView('analyzer')}
@@ -179,6 +179,16 @@ export function DashboardContent({ setActiveView }: DashboardContentProps) {
               <h3 className="font-semibold text-center">Medical Vision</h3>
               <p className="text-xs text-center text-muted-foreground">
                 Generate medical illustrations from text.
+              </p>
+            </div>
+            <div
+              className="flex flex-col items-center justify-center p-6 space-y-3 rounded-lg cursor-pointer bg-secondary/50 hover:bg-secondary transition-colors"
+              onClick={() => setActiveView('medical-doodle')}
+            >
+              <Brush className="h-8 w-8 text-primary" />
+              <h3 className="font-semibold text-center">Medical Doodle</h3>
+              <p className="text-xs text-center text-muted-foreground">
+                Generate images from your doodles.
               </p>
             </div>
         </CardContent>

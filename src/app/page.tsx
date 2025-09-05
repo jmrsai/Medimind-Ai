@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookText, FileText, LayoutDashboard, Loader2, Menu, Stethoscope, UserSquare, Eye } from 'lucide-react';
+import { BookText, FileText, LayoutDashboard, Loader2, Menu, Stethoscope, UserSquare, Eye, Brush } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -14,6 +14,7 @@ import { TreatmentPlanner } from '@/components/dashboard/TreatmentPlanner';
 import { DocumentSummarizer } from '@/components/dashboard/DocumentSummarizer';
 import { PatientChartSummarizer } from '@/components/dashboard/PatientChartSummarizer';
 import { MedicalVision } from '@/components/dashboard/MedicalVision';
+import { MedicalDoodleGenerator } from '@/components/dashboard/MedicalDoodleGenerator';
 import type { AnalyzePatientNotesOutput } from '@/ai/flows/analyze-patient-notes';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -30,7 +31,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
 
-type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer' | 'chart-summarizer' | 'medical-vision';
+type View = 'dashboard' | 'analyzer' | 'planner' | 'summarizer' | 'chart-summarizer' | 'medical-vision' | 'medical-doodle';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -39,6 +40,7 @@ const navItems = [
   { id: 'summarizer', label: 'AI Document Summarizer', icon: BookText },
   { id: 'chart-summarizer', label: 'AI Chart Summarizer', icon: UserSquare },
   { id: 'medical-vision', label: 'Medical Vision', icon: Eye },
+  { id: 'medical-doodle', label: 'Medical Doodle', icon: Brush },
 ];
 
 export default function DashboardPage() {
@@ -85,6 +87,8 @@ export default function DashboardPage() {
         return <PatientChartSummarizer />;
       case 'medical-vision':
         return <MedicalVision />;
+      case 'medical-doodle':
+        return <MedicalDoodleGenerator />;
       default:
         return <DashboardContent setActiveView={setActiveView} />;
     }
@@ -155,7 +159,7 @@ export default function DashboardPage() {
                     size="icon" 
                     className="h-16 w-16 rounded-full shadow-lg transition-all duration-300 ease-in-out active:animate-pop"
                 >
-                    <Logo className="h-16 w-16" />
+                    <Logo className="h-full w-full p-2 text-primary-foreground" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="end" className="w-64">
