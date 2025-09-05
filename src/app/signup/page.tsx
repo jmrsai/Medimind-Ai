@@ -118,7 +118,7 @@ export default function SignupPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading || isGoogleLoading || !auth}
+                disabled={isLoading || isGoogleLoading}
               />
             </div>
             <div className="space-y-2">
@@ -129,7 +129,7 @@ export default function SignupPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading || isGoogleLoading || !auth}
+                disabled={isLoading || isGoogleLoading}
               />
             </div>
              <div className="space-y-2">
@@ -140,10 +140,10 @@ export default function SignupPage() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={isLoading || isGoogleLoading || !auth}
+                disabled={isLoading || isGoogleLoading}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading || !auth}>
+            <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Account
             </Button>
@@ -156,7 +156,7 @@ export default function SignupPage() {
                   <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
               </div>
           </div>
-           <Button variant="outline" className="w-full" onClick={handleGoogleSignup} disabled={isLoading || isGoogleLoading || !auth}>
+           <Button variant="outline" className="w-full" onClick={handleGoogleSignup} disabled={isLoading || isGoogleLoading}>
               {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon className="mr-2" />}
               Google
           </Button>
