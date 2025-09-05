@@ -39,10 +39,11 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
    ```
 
 3. **Set up environment variables:**
-   Create a `.env` file in the root of your project and add your Gemini API key:
+   Create a `.env` file in the root of your project by copying the example file:
+   ```sh
+   cp .env.example .env
    ```
-   GEMINI_API_KEY=your_api_key_here
-   ```
+   Then, open the `.env` file and fill in your Firebase project configuration and your Gemini API key. You can find your Firebase credentials in your project's settings page in the Firebase console.
 
 4. **Run the development servers:**
    - Start the Next.js app:
@@ -66,6 +67,7 @@ This application uses **Genkit** to power its core AI functionalities. The AI fl
 - **AI Document Summarizer**: Condenses long medical documents into concise summaries.
 - **AI Chart Summarizer**: Creates a brief overview from a patient's chart.
 - **Medical Vision**: Generates high-quality medical illustrations from text descriptions.
+- **Medical Doodle Generator**: Transforms user doodles into detailed medical images.
 
 ## Deployment
 
