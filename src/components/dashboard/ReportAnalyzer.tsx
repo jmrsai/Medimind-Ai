@@ -14,7 +14,6 @@ import { Input } from '../ui/input';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Badge } from '../ui/badge';
-import { cn } from '@/lib/utils';
 import { UserMd } from '../icons';
 
 interface ReportAnalyzerProps {
