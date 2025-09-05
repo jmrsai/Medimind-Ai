@@ -47,7 +47,7 @@ export function MedicalVision() {
     a.href = imageUrl;
     a.download = 'medical-illustration.png';
     document.body.appendChild(a);
-a.click();
+    a.click();
     document.body.removeChild(a);
   };
 
@@ -113,7 +113,7 @@ a.click();
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="relative aspect-video w-full overflow-hidden rounded-md border">
+              <div className="relative aspect-square w-full overflow-hidden rounded-md border">
                 <Image src={imageUrl} alt="Generated medical illustration" fill className="object-contain" />
               </div>
             </CardContent>
