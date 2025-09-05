@@ -19,6 +19,7 @@ const colors = [
 
 export function MedicalDoodleGenerator() {
   const [prompt, setPrompt] = useState('');
+  const [advancements, setAdvancements] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const { toast } = useToast();
@@ -118,7 +119,7 @@ export function MedicalDoodleGenerator() {
     setIsLoading(true);
     setImageUrl(null);
     try {
-      const { imageUrl } = await generateFromDoodle({ prompt, doodleDataUri });
+      const { imageUrl } = await generateFromDoodle({ prompt, doodleDataUri, advancementsAndResults: advancements });
       setImageUrl(imageUrl);
     } catch (error) {
       console.error('Illustration generation failed:', error);
@@ -134,7 +135,7 @@ export function MedicalDoodleGenerator() {
   const handleDownload = () => {
     if (!imageUrl) return;
     const a = document.createElement('a');
-    a.href = imageUrl;
+a.href = imageUrl;
     a.download = 'medical-illustration-from-doodle.png';
     document.body.appendChild(a);
     a.click();
@@ -206,6 +207,17 @@ export function MedicalDoodleGenerator() {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     disabled={isLoading}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="advancements">Optional: Advancements and Results</Label>
+                    <Textarea
+                        id="advancements"
+                        placeholder="e.g., 'Illustrate the new protein folding mechanism discovered in the latest research...'"
+                        className="min-h-[100px]"
+                        value={advancements}
+                        onChange={(e) => setAdvancements(e.target.value)}
+                        disabled={isLoading}
                     />
                 </div>
             </div>

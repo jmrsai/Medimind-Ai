@@ -18,6 +18,7 @@ const GenerateFromDoodleInputSchema = z.object({
       "A user-drawn doodle, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:image/png;base64,<encoded_data>'."
     ),
   prompt: z.string().describe('A detailed text description to guide the illustration generation based on the doodle.'),
+  advancementsAndResults: z.string().optional().describe('Optional recent medical advancements and clinical trial results to consider for a more accurate illustration.'),
 });
 export type GenerateFromDoodleInput = z.infer<typeof GenerateFromDoodleInputSchema>;
 
@@ -44,8 +45,12 @@ const generateFromDoodleFlow = ai.defineFlow(
       prompt: [
         {
           text: `Transform the following user-drawn doodle and prompt into a photorealistic, high-quality medical illustration. The doodle provides the basic structure, and the prompt provides the details. The final image should be accurate, clear, and suitable for clinical and educational use.
-        ---
-        Prompt: ${input.prompt}`
+          {{#if advancementsAndResults}}
+          To ensure the highest accuracy, consider the following recent medical advancements and clinical trial results in your illustration:
+          {{{advancementsAndResults}}}
+          {{/if}}
+          ---
+          Prompt: ${input.prompt}`
         },
         {
             media: { url: input.doodleDataUri },
