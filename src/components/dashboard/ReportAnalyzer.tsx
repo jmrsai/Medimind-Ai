@@ -8,10 +8,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Download, Loader2, Upload, X } from 'lucide-react';
+import { Download, Loader2, Upload, X, ListOrdered, FileText, BrainCircuit } from 'lucide-react';
 import { Progress } from '../ui/progress';
 import { Input } from '../ui/input';
 import Image from 'next/image';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { Badge } from '../ui/badge';
+import { cn } from '@/lib/utils';
+import { UserMd } from '../icons';
 
 interface ReportAnalyzerProps {
   setAnalysisResult: (result: AnalyzePatientNotesOutput & { advancements?: string }) => void;
@@ -111,13 +115,36 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
   const handleDownload = () => {
     if (!result) return;
     const fileContent = `
-Primary Diagnosis: ${result.primaryDiagnosis}
-Confidence Score: ${Math.round(result.confidenceScore * 100)}%
-Differential Diagnoses:
-- ${result.differentialDiagnoses.join('\n- ')}
+# MediMind AI Analysis Result
 
-Diagnostic Reasoning:
-${result.diagnosticReasoning}
+## Primary Diagnosis
+**${result.primaryDiagnosis}**
+
+## Urgency
+**${result.urgency}**
+
+## Confidence Score
+**${Math.round(result.confidenceScore * 100)}%**
+
+---
+
+## Recommended Specialists
+${result.recommendedSpecialists.map(s => `- ${s}`).join('\n')}
+
+---
+
+## Differential Diagnoses
+${result.differentialDiagnoses.map(d => `- ${d}`).join('\n')}
+
+---
+
+## Diagnostic Reasoning
+
+### Based on Notes
+${result.diagnosticReasoning.notesAnalysis}
+
+### Based on Image
+${result.diagnosticReasoning.imageAnalysis || 'N/A'}
     `;
     const blob = new Blob([fileContent.trim()], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -129,6 +156,17 @@ ${result.diagnosticReasoning}
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  const UrgencyBadge = ({ urgency }: { urgency: AnalyzePatientNotesOutput['urgency'] }) => {
+    const variant = {
+        "Low": "default",
+        "Medium": "secondary",
+        "High": "outline",
+        "Critical": "destructive"
+    }[urgency];
+
+    return <Badge variant={variant as any}>{urgency}</Badge>
+  }
 
 
   return (
@@ -240,26 +278,56 @@ ${result.diagnosticReasoning}
               </Button>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <h3 className="font-semibold mb-1">Primary Diagnosis</h3>
-                <p className="text-lg font-bold text-primary">{result.primaryDiagnosis}</p>
+              <div className='p-4 rounded-lg bg-secondary/50'>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold">Primary Diagnosis</h3>
+                    <UrgencyBadge urgency={result.urgency} />
+                  </div>
+                  <p className="text-xl font-bold text-primary">{result.primaryDiagnosis}</p>
               </div>
+              
               <div className="space-y-2">
-                <h3 className="font-semibold">Confidence Score: {Math.round(result.confidenceScore * 100)}%</h3>
+                <h3 className="font-semibold text-sm">Confidence Score: {Math.round(result.confidenceScore * 100)}%</h3>
                 <Progress value={result.confidenceScore * 100} className="w-full" />
               </div>
+
               <div>
-                <h3 className="font-semibold mb-1">Differential Diagnoses</h3>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                  {result.differentialDiagnoses.map((diag, index) => (
-                    <li key={index}>{diag}</li>
-                  ))}
-                </ul>
+                <h3 className="font-semibold mb-2 flex items-center gap-2"><UserMd /> Recommended Specialists</h3>
+                <div className="flex flex-wrap gap-2">
+                    {result.recommendedSpecialists.map((specialist, index) => (
+                        <Badge key={index} variant="secondary">{specialist}</Badge>
+                    ))}
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold mb-1">Diagnostic Reasoning</h3>
-                <p className="text-sm text-muted-foreground bg-secondary/50 p-3 rounded-md">{result.diagnosticReasoning}</p>
-              </div>
+
+              <Accordion type="single" collapsible className="w-full" defaultValue='reasoning'>
+                <AccordionItem value="differentials">
+                  <AccordionTrigger className='text-base font-semibold'><ListOrdered className='mr-2'/>Differential Diagnoses</AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="list-decimal list-inside space-y-2 text-sm text-muted-foreground pl-2">
+                      {result.differentialDiagnoses.map((diag, index) => (
+                        <li key={index}>{diag}</li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="reasoning">
+                  <AccordionTrigger className='text-base font-semibold'><BrainCircuit className='mr-2' />Diagnostic Reasoning</AccordionTrigger>
+                  <AccordionContent className='space-y-4'>
+                    <div>
+                        <h4 className="font-semibold mb-1 flex items-center gap-2"><FileText size={16}/>From Notes</h4>
+                        <p className="text-sm text-muted-foreground bg-background/50 p-3 rounded-md">{result.diagnosticReasoning.notesAnalysis}</p>
+                    </div>
+                    {result.diagnosticReasoning.imageAnalysis && (
+                        <div>
+                            <h4 className="font-semibold mb-1 flex items-center gap-2"><X size={16}/>From Image</h4>
+                            <p className="text-sm text-muted-foreground bg-background/50 p-3 rounded-md">{result.diagnosticReasoning.imageAnalysis}</p>
+                        </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+             
             </CardContent>
             <CardFooter>
                 <Button onClick={handleGeneratePlan}>

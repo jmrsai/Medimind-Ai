@@ -28,7 +28,12 @@ const AnalyzePatientNotesOutputSchema = z.object({
   primaryDiagnosis: z.string().describe('The most likely primary diagnosis based on the provided clinical information.'),
   differentialDiagnoses: z.array(z.string()).describe('A list of potential differential diagnoses to consider, ordered by likelihood.'),
   confidenceScore: z.number().describe('A confidence score (0-1) reflecting the certainty of the primary diagnosis, considering the quality and completeness of the input data.'),
-  diagnosticReasoning: z.string().describe('A detailed, evidence-based explanation for the primary diagnosis, citing specific findings from the patient notes and image.'),
+  diagnosticReasoning: z.object({
+    notesAnalysis: z.string().describe("A detailed explanation for the diagnosis based on the patient's notes."),
+    imageAnalysis: z.string().optional().describe("A detailed explanation for the diagnosis based on the medical image, if provided.")
+  }).describe('A detailed, evidence-based explanation for the primary diagnosis, citing specific findings from the patient notes and image.'),
+  urgency: z.enum(["Low", "Medium", "High", "Critical"]).describe("The assessed urgency for medical intervention based on the analysis."),
+  recommendedSpecialists: z.array(z.string()).describe("A list of recommended specialists for consultation based on the diagnosis.")
 });
 export type AnalyzePatientNotesOutput = z.infer<typeof AnalyzePatientNotesOutputSchema>;
 
@@ -60,11 +65,7 @@ const analyzePatientNotesPrompt = ai.definePrompt({
   {{{advancementsAndResults}}}
   {{/if}}
 
-  Your response must be a structured JSON object containing:
-  - primaryDiagnosis: The most likely diagnosis.
-  - differentialDiagnoses: An ordered list of alternative diagnoses.
-  - confidenceScore: Your confidence (0.0 to 1.0) in the primary diagnosis.
-  - diagnosticReasoning: A detailed rationale, referencing specific points from the patient's data to support your conclusions.
+  Your response must be a structured JSON object.
   `,
 });
 

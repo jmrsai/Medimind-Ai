@@ -24,10 +24,12 @@ export function TreatmentPlanner({ analysisResult }: TreatmentPlannerProps) {
 
     useEffect(() => {
         if (analysisResult) {
+            const reasoningText = `Notes: ${analysisResult.diagnosticReasoning.notesAnalysis}. ${analysisResult.diagnosticReasoning.imageAnalysis ? `Image: ${analysisResult.diagnosticReasoning.imageAnalysis}` : ''}`;
             const formattedAnalysis = 
 `Primary Diagnosis: ${analysisResult.primaryDiagnosis}
 Confidence: ${Math.round(analysisResult.confidenceScore * 100)}%
-Reasoning: ${analysisResult.diagnosticReasoning}
+Urgency: ${analysisResult.urgency}
+Reasoning: ${reasoningText}
 Differentials: ${analysisResult.differentialDiagnoses.join(', ')}`;
             setAiAnalysis(formattedAnalysis);
             if (analysisResult.advancements) {

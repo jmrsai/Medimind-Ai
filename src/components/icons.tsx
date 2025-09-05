@@ -14,23 +14,20 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-        <path d="M12 2a2.83 2.83 0 0 0-2 5 4.24 4.24 0 0 0-4 4.24c0 1.76 1.25 3.19 3 3.63V15a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-.13a3.25 3.25 0 0 0 3-3.63A4.24 4.24 0 0 0 14 7a2.83 2.83 0 0 0-2-5Z" />
-        <path d="M12 2v2" />
-        <path d="M17 4.25a7.22 7.22 0 0 1 2.25 2.25" />
-        <path d="M19.5 10a7.22 7.22 0 0 1-2.25 5.75" />
-        <path d="M22 12h-2" />
-        <path d="M19.5 14.25a7.22 7.22 0 0 1-5.75 5.75" />
-        <path d="M12 22v-2" />
-        <path d="M10.25 19.5a7.22 7.22_0 0 1-5.75-5.75" />
-        <path d="M7 17a7.22 7.22 0 0 1-2.25-2.25" />
-        <path d="M2 12h2" />
-        <path d="M4.5 10A7.22 7.22 0 0 1 6.75 4.25" />
-        <path d="M7 7a2.83 2.83 0 0 0 5-2.83" />
-        <path d="M17 7a2.83 2.83 0 0 0-5-2.83" />
-        <path d="M15.5 12a3.5 3.5 0 0 0-3.5-3.5" />
-        <path d="M8.5 12a3.5 3.5 0 0 0 3.5-3.5" />
-        <path d="M12 15.5a3.5 3.5 0 0 0 3.5-3.5" />
-        <path d="M12 15.5a3.5 3.5 0 0 1-3.5-3.5" />
+      <path d="M9.5 2.5a2.5 2.5 0 0 1 5 0" />
+      <path d="M12 20.5a2.5 2.5 0 0 1-5 0" />
+      <path d="M12 2.5a2.5 2.5 0 0 0-5 0" />
+      <path d="m12 20.5a2.5 2.5 0 0 0 5 0" />
+      <path d="m4.5 12a2.5 2.5 0 0 0 0 5" />
+      <path d="m19.5 12a2.5 2.5 0 0 1 0 5" />
+      <path d="m4.5 7a2.5 2.5 0 0 1 0 5" />
+      <path d="m19.5 7a2.5 2.5 0 0 0 0 5" />
+      <path d="M12 4.5a2.5 2.5 0 0 0-5 0" />
+      <path d="M12 4.5a2.5 2.5 0 0 1 5 0" />
+      <path d="m12 14.5a2.5 2.5 0 0 1 5 0" />
+      <path d="m12 14.5a2.5 2.5 0 0 0-5 0" />
+      <path d="M5 12a7.5 4.5 0 0 0 14 0" />
+      <path d="M5 12a7.5 4.5 0 0 1 14 0" />
     </svg>
   );
 }
@@ -51,4 +48,17 @@ export function GoogleIcon(props: SVGProps<SVGSVGElement>) {
       />
     </svg>
   );
+}
+
+export function UserMd(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <circle cx="12" cy="12" r="10" />
+            <path d="m12 10-2 4 2 4 2-4-2-4Z" />
+            <path d="M12 10v- condizione" />
+            <line x1="12" x2="12" y1="10" y2="4" />
+            <path d="m12 4 2 2" />
+            <path d="m12 4-2 2" />
+        </svg>
+    )
 }
