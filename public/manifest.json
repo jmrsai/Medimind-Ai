@@ -1,0 +1,10 @@
+{
+  "name": "MediMind AI",
+  "short_name": "MediMind",
+  "description": "AI-powered medical analysis and treatment planning.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F0F2F5",
+  "theme_color": "#77B5FE",
+  "icons": []
+}

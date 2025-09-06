@@ -9,7 +9,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "pwa-assets": "pwa-asset-generator public/logo.svg public/icons --manifest public/manifest.json --icon-only"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.14.1",
@@ -62,6 +63,7 @@
     "@types/react-dom": "^18",
     "genkit-cli": "^1.14.1",
     "postcss": "^8",
+    "pwa-asset-generator": "^6.3.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

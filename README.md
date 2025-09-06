@@ -6,6 +6,8 @@
 
 MediMind AI is an advanced, AI-powered medical analysis and treatment planning application. It is designed to assist healthcare professionals by providing tools to analyze patient notes, generate comprehensive treatment plans, and summarize lengthy medical documents, streamlining clinical workflows and decision-making.
 
+This is a Progressive Web App (PWA), which means you can install it on your mobile device or desktop for a native-like experience.
+
 ## Tech Stack
 
 This project is built with a modern, robust technology stack:
@@ -45,7 +47,13 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
    ```
    Then, open the `.env` file and fill in your Firebase project configuration and your Gemini API key. You can find your Firebase credentials in your project's settings page in the Firebase console.
 
-4. **Run the development servers:**
+4. **Generate PWA Assets:**
+   To ensure the app has all the right icons and splash screens for different devices, run the following command. This only needs to be done once, unless you change the `public/logo.svg` file.
+   ```sh
+   npm run pwa-assets
+   ```
+
+5. **Run the development servers:**
    - Start the Next.js app:
      ```sh
      npm run dev
@@ -55,7 +63,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
      npm run genkit:watch
      ```
    
-5. **Open the application:**
+6. **Open the application:**
    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## AI Features
