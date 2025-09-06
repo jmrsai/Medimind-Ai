@@ -28,7 +28,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu"
-import { onAuthStateChanged, User } from 'firebase/auth';
 import { useAuth } from '@/hooks/use-auth';
 
 
@@ -46,7 +45,7 @@ const navItems = [
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { auth, user, loading } = useAuth();
+  const { user, loading } = useAuth();
   const [activeView, setActiveView] = useState<View>('dashboard');
   const [analysisResult, setAnalysisResult] = useState<(AnalyzePatientNotesOutput & { advancements?: string; }) | null>(null);
   const [isContentVisible, setIsContentVisible] = useState(false);
@@ -62,7 +61,7 @@ export default function DashboardPage() {
   }, [user, loading, router]);
 
 
-  if (loading || !user) {
+  if (loading || !isContentVisible) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />

@@ -15,12 +15,12 @@ import {
 import { signOut } from 'firebase/auth';
 import { LogOut, User as UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Skeleton } from './ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
+import { Skeleton } from './ui/skeleton';
 
 export function UserNav() {
   const router = useRouter();
-  const { auth, user, loading } = useAuth();
+  const { auth, user } = useAuth();
 
   const handleLogout = async () => {
     if (!auth) return;
@@ -32,13 +32,9 @@ export function UserNav() {
     if (!email) return 'U';
     return email.charAt(0).toUpperCase();
   };
-
-  if (loading) {
-    return <Skeleton className="h-9 w-9 rounded-full" />;
-  }
   
   if (!user) {
-    return null;
+    return <Skeleton className="h-9 w-9 rounded-full" />;
   }
 
   return (

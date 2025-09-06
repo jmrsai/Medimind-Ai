@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -25,6 +26,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
   const [notes, setNotes] = useState('');
   const [guidelines, setGuidelines] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isFileLoading, setIsFileLoading] = useState(false);
   const [result, setResult] = useState<AnalyzePatientNotesOutput | null>(null);
   const { toast } = useToast();
   const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
@@ -33,6 +35,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setIsFileLoading(true);
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result;
@@ -49,6 +52,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
               description: `Successfully loaded content from ${file.name}.`,
             });
         }
+        setIsFileLoading(false);
       };
       reader.onerror = () => {
           toast({
@@ -56,6 +60,7 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
               title: 'File Read Error',
               description: 'Could not read the contents of the selected file.',
           });
+          setIsFileLoading(false);
       };
       if (file.type.startsWith('image/')) {
         reader.readAsDataURL(file);
@@ -63,29 +68,32 @@ export function ReportAnalyzer({ setAnalysisResult, setActiveView }: ReportAnaly
         reader.readAsText(file);
       }
     }
-     // Reset file input to allow uploading the same file again
     event.target.value = '';
   };
 
   const handleSubmit = async () => {
-    if (!notes && !photoDataUri) {
+    if (!notes.trim() && !photoDataUri) {
       toast({
         variant: 'destructive',
         title: 'Input required',
-        description: 'Please enter patient notes or upload a document to analyze.',
+        description: 'Please enter patient notes or upload a file to analyze.',
       });
       return;
     }
     setIsLoading(true);
     setResult(null);
     try {
-      const input: AnalyzePatientNotesInput = { notes, treatmentPlanGuidelines: guidelines, advancementsAndResults: advancements };
+      const input: AnalyzePatientNotesInput = { 
+        notes: notes,
+        treatmentPlanGuidelines: guidelines, 
+        advancementsAndResults: advancements 
+      };
       if (photoDataUri) {
         input.photoDataUri = photoDataUri;
       }
       const analysisResult = await analyzePatientNotes(input);
       setResult(analysisResult);
-      setAnalysisResult({...analysisResult, advancements }); // Pass result to parent
+      setAnalysisResult({...analysisResult, advancements });
     } catch (error) {
       console.error('Analysis failed:', error);
       toast({
@@ -142,8 +150,9 @@ ${result.differentialDiagnoses.map(d => `- ${d}`).join('\n')}
 ### Based on Notes
 ${result.diagnosticReasoning.notesAnalysis}
 
+${result.diagnosticReasoning.imageAnalysis ? `
 ### Based on Image
-${result.diagnosticReasoning.imageAnalysis || 'N/A'}
+${result.diagnosticReasoning.imageAnalysis}` : ''}
     `;
     const blob = new Blob([fileContent.trim()], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -185,16 +194,16 @@ ${result.diagnosticReasoning.imageAnalysis || 'N/A'}
                 className="hidden"
                 accept="text/*,image/*"
                 onChange={handleFileChange}
-                disabled={isLoading}
+                disabled={isLoading || isFileLoading}
               />
               <label
                 htmlFor="file-upload"
                 className="flex-1"
               >
-                  <Button asChild variant="outline" disabled={isLoading} className="cursor-pointer">
+                  <Button asChild variant="outline" disabled={isLoading || isFileLoading} className="cursor-pointer w-full">
                     <div>
-                        <Upload className="mr-2 h-4 w-4" />
-                        Upload file
+                        {isFileLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+                        {isFileLoading ? 'Loading...' : 'Upload file'}
                     </div>
                   </Button>
               </label>
@@ -202,7 +211,7 @@ ${result.diagnosticReasoning.imageAnalysis || 'N/A'}
             {photoDataUri && (
                 <div className="relative mt-2 rounded-md border border-input p-2 max-w-[200px]">
                     <Image src={photoDataUri} alt="Uploaded document" width={200} height={200} className="rounded-md object-contain" />
-                    <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 bg-background/50 hover:bg-background/80" onClick={clearPhoto}>
+                    <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 bg-background/50 hover:bg-background/80" onClick={clearPhoto} disabled={isLoading}>
                         <X className="h-4 w-4" />
                     </Button>
                 </div>
@@ -245,7 +254,7 @@ ${result.diagnosticReasoning.imageAnalysis || 'N/A'}
           </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={handleSubmit} disabled={isLoading}>
+          <Button onClick={handleSubmit} disabled={isLoading || isFileLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Analyze Notes
           </Button>
