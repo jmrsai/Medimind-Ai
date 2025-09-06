@@ -328,7 +328,7 @@ ${result.diagnosticReasoning.imageAnalysis}` : ''}
                     </div>
                     {result.diagnosticReasoning.imageAnalysis && (
                         <div>
-                            <h4 className="font-semibold mb-1 flex items-center gap-2"><X size={16}/>From Image</h4>
+                            <h4 className="font-semibold mb-1 flex items-center gap-2"><UserMd size={16}/>From Image</h4>
                             <p className="text-sm text-muted-foreground bg-background/50 p-3 rounded-md">{result.diagnosticReasoning.imageAnalysis}</p>
                         </div>
                     )}

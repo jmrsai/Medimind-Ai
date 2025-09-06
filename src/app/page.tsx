@@ -53,7 +53,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!loading) {
       if (user) {
-        setTimeout(() => setIsContentVisible(true), 100);
+        setIsContentVisible(true);
       } else {
         router.push('/login');
       }

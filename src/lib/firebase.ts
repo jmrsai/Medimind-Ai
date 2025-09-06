@@ -1,4 +1,3 @@
-
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 
@@ -17,7 +16,7 @@ const firebaseConfig = {
 let app: FirebaseApp;
 
 // This check prevents restarting the app on every hot reload
-if (!getApps().length) {
+if (getApps().length === 0) {
     app = initializeApp(firebaseConfig);
 } else {
     app = getApp();
