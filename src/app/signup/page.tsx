@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,12 +17,18 @@ import { useAuth } from '@/hooks/use-auth';
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { auth } = useAuth();
+  const { auth, user, loading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/');
+    }
+  }, [user, loading, router]);
 
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -94,6 +100,14 @@ export default function SignupPage() {
     } finally {
         setIsGoogleLoading(false);
     }
+  }
+
+  if (loading || user) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+      </div>
+    );
   }
 
 

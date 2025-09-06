@@ -135,7 +135,7 @@ export function MedicalDoodleGenerator() {
   const handleDownload = () => {
     if (!imageUrl) return;
     const a = document.createElement('a');
-a.href = imageUrl;
+    a.href = imageUrl;
     a.download = 'medical-illustration-from-doodle.png';
     document.body.appendChild(a);
     a.click();

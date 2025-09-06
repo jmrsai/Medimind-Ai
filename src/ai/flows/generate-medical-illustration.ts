@@ -13,6 +13,7 @@ import { z } from 'zod';
 
 const GenerateMedicalIllustrationInputSchema = z.object({
   prompt: z.string().describe('A detailed text description of the medical illustration to generate.'),
+  advancementsAndResults: z.string().optional().describe('Optional recent medical advancements and clinical trial results to consider for a more accurate illustration.'),
 });
 export type GenerateMedicalIllustrationInput = z.infer<typeof GenerateMedicalIllustrationInputSchema>;
 
@@ -39,11 +40,15 @@ const generateMedicalIllustrationFlow = ai.defineFlow(
       prompt: [
         {text: `Generate a photorealistic, high-quality medical illustration for use in a clinical setting.
       Focus on accuracy and clarity. The illustration should be suitable for patient education and professional presentations.
+      {{#if advancementsAndResults}}
+      To ensure the highest accuracy, consider the following recent medical advancements and clinical trial results in your illustration:
+      {{{advancementsAndResults}}}
+      {{/if}}
       ---
       Prompt: ${input.prompt}`}
       ],
       config: {
-        responseModalities: ['IMAGE'],
+        responseModalities: ['TEXT', 'IMAGE'],
       },
     });
 

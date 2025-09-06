@@ -57,7 +57,7 @@ const generateFromDoodleFlow = ai.defineFlow(
         }
       ],
       config: {
-        responseModalities: ['IMAGE'],
+        responseModalities: ['TEXT', 'IMAGE'],
       },
     });
 

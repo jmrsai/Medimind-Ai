@@ -12,6 +12,7 @@ import Image from 'next/image';
 
 export function MedicalVision() {
   const [prompt, setPrompt] = useState('');
+  const [advancements, setAdvancements] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const { toast } = useToast();
@@ -28,7 +29,7 @@ export function MedicalVision() {
     setIsLoading(true);
     setImageUrl(null);
     try {
-      const { illustrationUrl } = await generateMedicalIllustration({ prompt });
+      const { illustrationUrl } = await generateMedicalIllustration({ prompt, advancementsAndResults: advancements });
       setImageUrl(illustrationUrl);
     } catch (error) {
       console.error('Illustration generation failed:', error);
@@ -58,7 +59,7 @@ export function MedicalVision() {
           <CardTitle className="font-headline">Medical Vision</CardTitle>
           <CardDescription>Generate a medical illustration from a text description.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="prompt">Illustration Description</Label>
             <Textarea
@@ -69,6 +70,17 @@ export function MedicalVision() {
               onChange={(e) => setPrompt(e.target.value)}
               disabled={isLoading}
             />
+          </div>
+           <div className="space-y-2">
+              <Label htmlFor="advancements">Optional: Advancements and Results</Label>
+              <Textarea
+                  id="advancements"
+                  placeholder="e.g., 'Illustrate the newly discovered neural pathway based on the latest research...'"
+                  className="min-h-[100px]"
+                  value={advancements}
+                  onChange={(e) => setAdvancements(e.target.value)}
+                  disabled={isLoading}
+              />
           </div>
         </CardContent>
         <CardFooter>
